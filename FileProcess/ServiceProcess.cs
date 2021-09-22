@@ -18,15 +18,19 @@ namespace CodeFileTools
             var depRepName = $"_{csName.FirstLeterLower()}Rep";
 
             string fullFilePath = Path.Combine(option.Abspath, $"{csName}Service.cs");
-            if (!File.Exists(fullFilePath))
+            if (File.Exists(fullFilePath))
             {
-                Console.WriteLine($" ---- 开始生成服务类 '{csName}Service.cs', 文件存放路径：'{option.Abspath}' ----");
-                using (File.Create(fullFilePath))
-                {
-
-                }
-                Console.WriteLine("    --生成成功--   ");
+                File.Delete(fullFilePath);
             }
+
+            Console.WriteLine($" ---- 开始生成服务类 '{csName}Service.cs', 文件存放路径：'{option.Abspath}' ----");
+
+
+            using (File.Create(fullFilePath))
+            {
+
+            }
+            Console.WriteLine("    --生成成功--   ");
 
             var content = new StringBuilder();
             //using

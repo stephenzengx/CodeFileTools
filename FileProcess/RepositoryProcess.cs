@@ -17,15 +17,19 @@ namespace CodeFileTools
             var csSummaryName = prefix[2];
 
             string fullFilePath = Path.Combine(option.Abspath, $"{csName}Repostory.cs");
-            if (!File.Exists(fullFilePath))
+            if (File.Exists(fullFilePath))
             {
-                Console.WriteLine($" ----开始生成仓储类 '{csName}Repostory.cs', 文件存放路径：'{option.Abspath}' ----");
-                using (File.Create(fullFilePath))
-                {
-
-                }
-                Console.WriteLine("    --生成成功--   ");
+                File.Delete(fullFilePath);
             }
+
+            Console.WriteLine($" ----开始生成仓储类 '{csName}Repostory.cs', 文件存放路径：'{option.Abspath}' ----");
+
+
+            using (File.Create(fullFilePath))
+            {
+
+            }
+            Console.WriteLine("    --生成成功--   ");
 
             var content = new StringBuilder();
             //using
