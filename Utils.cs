@@ -78,11 +78,15 @@ namespace CodeFileTools
 
                     Console.WriteLine($"开始检查sheet表 '{sheetName}': ");
                     //数据库表名
-                    var neededItems = new List<string>{ sheetName };
-                    var sheetSpitArray = sheetName.Split("_").ToList();
+                    var neededItems = new List<string>();
+                    var sheetSpitArray = sheetName.Split("-").ToList();
+                    neededItems.Add(sheetSpitArray[0]);
+
+                    var tbSpitArray = sheetSpitArray[0].Split("_").ToList();
+
                     var sbCsName = new StringBuilder();
                     var flag = true;
-                    foreach (var item in sheetSpitArray)
+                    foreach (var item in tbSpitArray)
                     {
                         if (flag)
                         {
@@ -94,7 +98,7 @@ namespace CodeFileTools
                     }
 
                     neededItems.Add(sbCsName.ToString());
-
+                    neededItems.Add(sheetSpitArray[1]);
                     var queryRet = xmlSheetReader.Query(true, sheetName, "A1", null);
 
                     //得到表字段属性，以及索引属性--
