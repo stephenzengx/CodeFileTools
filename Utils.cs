@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Excel;
 using Excel.OpenXml;
 using Excel.Utils;
@@ -76,13 +77,24 @@ namespace CodeFileTools
                     }
 
                     Console.WriteLine($"开始检查sheet表 '{sheetName}': ");
-                    //数据库表名-class名-中文名
-                    var sheetSpitArray = sheetName.Split("-").ToList();
-                    if (sheetSpitArray.Count <= 1 || sheetSpitArray.Count > 3)
+                    //数据库表名
+                    var neededItems = new List<string>{ sheetName };
+                    var sheetSpitArray = sheetName.Split("_").ToList();
+                    var sbCsName = new StringBuilder();
+                    var flag = true;
+                    foreach (var item in sheetSpitArray)
                     {
-                        Console.WriteLine($"sheet名'{sheetName}' 格式有误，请检查!");
-                        return;
+                        if (flag)
+                        {
+                            flag = false;
+                            continue;
+                        }
+
+                        sbCsName.Append(item.FirstLeterUpper());
                     }
+
+                    neededItems.Add(sbCsName.ToString());
+
                     var queryRet = xmlSheetReader.Query(true, sheetName, "A1", null);
 
                     //得到表字段属性，以及索引属性--
@@ -101,7 +113,7 @@ namespace CodeFileTools
                     //初始化字段 然后通过接口导入
                     foreach (var option in Options.Where(m=>m.IsCreate))
                     {
-                        dic[(FileTypeEnum)option.Sort].CreateFile(sheetSpitArray, option, ret);
+                        dic[(FileTypeEnum)option.Sort].CreateFile(neededItems, option, ret);
                     }
                 }
             }
@@ -303,9 +315,24 @@ namespace CodeFileTools
             return type;
         }
 
+        /// <summary>
+        /// 首字母小写
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public static string FirstLeterLower(this string s)
         {
             return s.Substring(0, 1).ToLower() + s.Substring(1);
+        }
+
+        /// <summary>
+        /// 首字母大写
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string FirstLeterUpper(this string s)
+        {
+            return s.Substring(0, 1).ToUpper() + s.Substring(1);
         }
     }
 }
