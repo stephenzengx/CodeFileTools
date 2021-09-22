@@ -299,6 +299,7 @@ namespace CodeFileTools
         public static string GetCLRTypeString(string dbType)
         {
             string type = string.Empty;
+            dbType = dbType.ToLower();
             if (dbType.StartsWith("varchar"))
             {
                 type = "string";
