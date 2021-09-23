@@ -57,7 +57,7 @@ namespace CodeFileTools
             content.Append(GetTabContent($"Task<Result> AddAsync({csName} input);", 2));
             content.Append(GetTabContent($"Task<Result> EditAsync(string id, {csName} input);", 2));
             content.Append(GetTabContent("Task<Result> DetailAsync(string id);", 2));
-            content.Append(GetTabContent("Task<Result> DeleteAsync(string id);", 2));
+            content.Append(GetTabContent("Task<Result> DelAsync(string id);", 2));
 
             content.Append(GetTabContent("}", 1));
             #endregion

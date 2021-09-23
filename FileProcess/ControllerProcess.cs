@@ -84,7 +84,7 @@ namespace CodeFileTools
             content.Append(GetTabContent("/// <param name=\"input\"></param>", 2));
             content.Append(GetTabContent("/// <returns></returns>", 2));
             content.Append(GetTabContent("[HttpPost]", 2));
-            content.Append(GetTabContent($"public async Task<Result> AddAsync({csName} input)", 2));
+            content.Append(GetTabContent($"public async Task<Result> AddAsync([FromBody]{csName} input)", 2));
             content.Append(GetTabContent("{", 2));
             content.Append(GetTabContent($"return await {depServiceName}.AddAsync(input);", 3));
             content.Append(GetTabContent("}", 2));
@@ -98,7 +98,7 @@ namespace CodeFileTools
             content.Append(GetTabContent("/// <param name=\"input\"></param>", 2));
             content.Append(GetTabContent("/// <returns></returns>", 2));
             content.Append(GetTabContent("[HttpPost]", 2));
-            content.Append(GetTabContent($"public async Task<Result> EditAsync([Required]string id, {csName} input)", 2));
+            content.Append(GetTabContent($"public async Task<Result> EditAsync([Required]string id, [FromBody]{csName} input)", 2));
             content.Append(GetTabContent("{", 2));
             content.Append(GetTabContent($"return await {depServiceName}.EditAsync(id,input);", 3));
             content.Append(GetTabContent("}", 2));
@@ -124,9 +124,9 @@ namespace CodeFileTools
             content.Append(GetTabContent("/// <param name=\"id\"></param>", 2));
             content.Append(GetTabContent("/// <returns></returns>", 2));
             content.Append(GetTabContent("[HttpPost]", 2));
-            content.Append(GetTabContent($"public async Task<Result> DeleteAsync([Required]string id)", 2));
+            content.Append(GetTabContent($"public async Task<Result> DelAsync([Required]string id)", 2));
             content.Append(GetTabContent("{", 2));
-            content.Append(GetTabContent($"return await {depServiceName}.DeleteAsync(id);", 3));
+            content.Append(GetTabContent($"return await {depServiceName}.DelAsync(id);", 3));
             content.Append(GetTabContent("}", 2));
             content.Append("\r\n");
 

@@ -123,7 +123,7 @@ namespace CodeFileTools
             content.Append("\r\n");
 
             //删
-            content.Append(GetTabContent("public async Task<Result> DeleteAsync(string id)", 2));
+            content.Append(GetTabContent("public async Task<Result> DelAsync(string id)", 2));
             content.Append(GetTabContent("{", 2));
 
             content.Append(GetTabContent("//TODO 逻辑判断", 3));
