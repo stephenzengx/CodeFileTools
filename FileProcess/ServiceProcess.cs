@@ -86,7 +86,7 @@ namespace CodeFileTools
 
             content.Append(GetTabContent("//TODO 逻辑判断", 3));
             content.Append("\r\n");
-            content.Append(GetTabContent($"await {depRepName}.InsertUWAsync(input);", 3));
+            content.Append(GetTabContent($"await {depRepName}.InsertAsync(input);", 3));
             content.Append("\r\n");
             content.Append(GetTabContent("return Result.Ok();", 3));
 
