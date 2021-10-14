@@ -104,16 +104,6 @@ namespace CodeFileTools
                     //得到表字段属性，以及索引属性--
                     var ret = GetExcelResolveRet(queryRet);
 
-                    //foreach (var item in ret.Item1)
-                    //{
-                    //    Console.WriteLine(JsonConvert.SerializeObject(item));
-                    //}
-
-                    //foreach (var item in ret.Item2)
-                    //{
-                    //    Console.WriteLine(JsonConvert.SerializeObject(item));
-                    //}
-
                     //初始化字段 然后通过接口导入
                     foreach (var option in Options.Where(m=>m.IsCreate))
                     {

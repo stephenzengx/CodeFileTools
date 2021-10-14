@@ -1,4 +1,6 @@
-﻿namespace CodeFileTools
+﻿using System;
+
+namespace CodeFileTools
 {
     public class TbDesc
     {
@@ -11,6 +13,11 @@
         public int? MaxLength { get; set; } //如果为varchar的最大长度
 
         public string Remark { get; set; }
+
+        public void TbDescSay()
+        {
+            Console.WriteLine("This is TbDescSay");
+        }
     }
 
     public class IndexDesc
