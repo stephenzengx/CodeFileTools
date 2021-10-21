@@ -50,14 +50,37 @@ namespace CodeFileTools
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
             foreach (var assemb in assemblies)
             {
-                
-                Console.WriteLine($"{assemb.FullName}");//assemb.GetName()
+                if(!assemb.FullName.Contains("CodeFileTools"))
+                    continue;
 
-                foreach (var type in assemb.GetExportedTypes())
+                Console.WriteLine($"{assemb.FullName}");//assemb.GetName()
+                //foreach (var type in assemb.GetExportedTypes()) //获取此程序集中定义的公共类型，这些公共类型在程序集外可见。
+                //{
+                //    Console.WriteLine($"{type.FullName}");
+                //}
+
+                Console.WriteLine("-----");
+
+                foreach (var type in assemb.GetTypes()) //获取此程序集中定义的类型。
                 {
-                    //Console.WriteLine($"{type.Namespace} - {type.Name} - {type.FullName}");
-                    Console.WriteLine($"{type.FullName}");
-                    
+                    if (type.FullName.Contains("MyMiniExcel"))
+                    {
+
+                        Console.WriteLine($"{type.FullName}-----------------");
+                        var Methods = type.GetMethods();
+                        foreach (var method in Methods)
+                        {
+                            Console.WriteLine(method.Name);
+                        }
+
+                        //foreach (ParameterInfo Param in Params)
+                        //{
+                        //    Console.WriteLine("Param=" + Param.Name.ToString());
+                        //    Console.WriteLine("  Type=" + Param.ParameterType.ToString());
+                        //    Console.WriteLine("  Position=" + Param.Position.ToString());
+                        //    Console.WriteLine("  Optional=" + Param.IsOptional.ToString());
+                        //}
+                    }
                 }
 
                 //var ret1 = assemb.GetManifestResourceNames();
