@@ -11,11 +11,11 @@ namespace CodeFileTools
         Entity = 5 //实体，里面包含Map
     }
 
-    public class FileTypeAttr : Attribute
+    public class FileTypeAttribute : Attribute
     {
         public FileTypeEnum FileType;
 
-        public FileTypeAttr(FileTypeEnum fileType)
+        public FileTypeAttribute(FileTypeEnum fileType)
         {
             FileType = fileType;
         }

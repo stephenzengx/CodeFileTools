@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CodeFileTools
 {
-    [FileTypeAttr(FileTypeEnum.Repository)]
+    [FileTypeAttribute(FileTypeEnum.Repository)]
     public class RepositoryProcess : IFileProcess
     {
         public void CreateFile(List<string> prefix, CreateOptions option, Tuple<List<TbDesc>, List<IndexDesc>> ret)

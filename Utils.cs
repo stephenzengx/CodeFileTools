@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Excel;
 using Excel.OpenXml;
 using Excel.Utils;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace CodeFileTools
 {
@@ -17,26 +17,31 @@ namespace CodeFileTools
         public static string ContextName;
         public static List<CreateOptions> Options;
         public static string IgnoreFields;
-        public static Dictionary<FileTypeEnum, IFileProcess> dic = new Dictionary<FileTypeEnum, IFileProcess>();
+        public static Dictionary<FileTypeEnum, IFileProcess> dicType = new Dictionary<FileTypeEnum, IFileProcess>();
 
         static Utils()
         {
-            //TODO 待优化 用工厂+自定义Attr+反射做，参考荣第 RechargeOperationFactory 
-            foreach (FileTypeEnum type in Enum.GetValues(typeof(FileTypeEnum)))
-            {
-                if(type == FileTypeEnum.Controllers)
-                    dic.Add(type, new ControllerProcess());
-                else if (type == FileTypeEnum.IService)
-                    dic.Add(type, new IServiceProcess());
-                else if (type == FileTypeEnum.Service)
-                    dic.Add(type, new ServiceProcess());
-                else if (type == FileTypeEnum.Repository)
-                    dic.Add(type, new RepositoryProcess());
-                else if (type == FileTypeEnum.Entity)
-                    dic.Add(type, new EntityProcess());
-            }
+            //InitDicType();
 
             Reload();
+        }
+
+        public static void InitDicType()
+        {
+            var types = new List<Type>();
+            AppDomain.CurrentDomain.GetAssemblies().ToList().ForEach(ass =>
+            {
+                types.AddRange(ass.GetTypes().Where(t => t.GetInterface(nameof(IFileProcess)) != null));
+            });
+
+            foreach (var type in types)
+            {
+                var attrs = type.GetCustomAttributes<FileTypeAttribute>();
+                var fileTypeAttributes = attrs as FileTypeAttribute[] ?? attrs.ToArray();
+                if (!fileTypeAttributes.Any())
+                    continue;
+                dicType.Add(fileTypeAttributes.First().FileType, Activator.CreateInstance(type) as IFileProcess);
+            }
         }
 
         /// <summary>
@@ -107,7 +112,7 @@ namespace CodeFileTools
                     //初始化字段 然后通过接口导入
                     foreach (var option in Options.Where(m=>m.IsCreate))
                     {
-                        dic[(FileTypeEnum)option.Sort].CreateFile(neededItems, option, ret);
+                        dicType[(FileTypeEnum)option.Sort].CreateFile(neededItems, option, ret);
                     }
                 }
             }

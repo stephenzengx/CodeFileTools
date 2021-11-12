@@ -5,6 +5,7 @@ using System.Text;
 
 namespace CodeFileTools
 {
+    [FileTypeAttribute(FileTypeEnum.Controllers)]
     public class ControllerProcess : IFileProcess
     {
         public void CreateFile(List<string> prefix, CreateOptions option, Tuple<List<TbDesc>, List<IndexDesc>> ret)
