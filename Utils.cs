@@ -21,7 +21,7 @@ namespace CodeFileTools
 
         static Utils()
         {
-            //InitDicType();
+            InitDicType();
 
             Reload();
         }
@@ -112,7 +112,7 @@ namespace CodeFileTools
                     //初始化字段 然后通过接口导入
                     foreach (var option in Options.Where(m=>m.IsCreate))
                     {
-                        dicType[(FileTypeEnum)option.Sort].CreateFile(neededItems, option, ret);
+                        dicType[option.Sort].CreateFile(neededItems, option, ret);
                     }
                 }
             }
@@ -333,6 +333,129 @@ namespace CodeFileTools
         public static string FirstLeterUpper(this string s)
         {
             return s.Substring(0, 1).ToUpper() + s.Substring(1);
+        }
+
+        /// <summary>
+        /// 生成文件GDSJG
+        /// </summary>
+        /// <param name="filePath"></param>
+        public static void StartCreateFile_GDSJG(string filePath)
+        {
+            //获取第一个文件
+            var files = new DirectoryInfo(filePath).GetFiles().Where(m => !m.Name.Contains("$")).ToList();
+            var file = files[0];
+            var sheetNames = MyMiniExcel.GetSheetNames(file.FullName);
+
+            Console.WriteLine($"----开始检查Excel表 '{file.Name}' ----");
+
+            using (FileStream stream = Helpers.OpenSharedRead(file.FullName))
+            {
+                var xmlSheetReader = new ExcelOpenXmlSheetReader(stream);
+
+                foreach (var sheetName in sheetNames)
+                {
+                    if (sheetName.Contains("~"))
+                    {
+                        Console.WriteLine($"sheet表：'{sheetName}'，跳过生成!");
+                        continue;
+                    }
+
+                    Console.WriteLine($"开始检查sheet表 '{sheetName}': ");
+
+                    //数据库表名
+                    var neededItems = new List<string>();
+                    var sheetSpitArray = sheetName.Split("-").ToList();
+
+                    neededItems.Add(sheetSpitArray[0]);
+                    neededItems.Add(sheetSpitArray[1]);
+                    var queryRet = xmlSheetReader.Query(true, sheetName, "A1", null);
+
+                    //得到表字段属性，以及索引属性--
+                    var ret = GetExcelResolveRet_GDSJG(queryRet);
+
+                    //初始化字段 然后通过接口导入
+                    foreach (var option in Options.Where(m => m.IsCreate && m.Sort == FileTypeEnum.Entity_GDSJG))
+                    {
+                        dicType[option.Sort].CreateFile(neededItems, option, ret);
+                    }
+                }
+            }
+        }
+
+        //处理数据库设计表格数据-GDSJG
+        public static Tuple<List<TbDesc>, List<IndexDesc>> GetExcelResolveRet_GDSJG(IEnumerable<IDictionary<string, object>> dicList)
+        {
+            var ret = new List<TbDesc>();
+            var flag = true;
+            foreach (var row in dicList)
+            {
+                if (flag)
+                {
+                    flag = false;
+                    continue;
+                }
+
+                var model1 = new TbDesc();
+                //公共字段跳过
+                if (IgnoreFields.Contains(row["字段名称"].ToString()))
+                    continue;
+                /*
+                 数据项	字段名称	数据类型	长 度	填报要求	说明	值域
+                机构标识	JGDM	字符串	30	应填	见机构信息表机构标识。	
+                */
+
+                model1.CLRTypeString = GetCLRTypeString_GDSJG(row["数据类型"].ToString());
+
+                model1.FieldName = row["字段名称"].ToString();
+
+                if (row["说明"] == null)
+                {
+                    continue;
+                }
+
+                model1.Remark = row["填报要求"]?.ToString().Replace("\n", "") + " / " +
+                                row["数据项"]?.ToString().Replace("\n", "") + " / " + row["说明"]?.ToString().Replace("\n",""); 
+                if(!string.IsNullOrEmpty(row["值域"]?.ToString()))
+                    model1.Remark+=" / " + row["值域"]?.ToString().Replace("\n", "");
+
+
+                if (row["数据类型"].ToString().Contains("字符串"))//长度
+                {
+                    model1.MaxLength = Convert.ToInt32(row["长度"].ToString());
+                }
+                ret.Add(model1);
+            }
+
+            return new Tuple<List<TbDesc>, List<IndexDesc>>(item1:ret,item2:new List<IndexDesc>());
+        }
+
+        /// <summary>
+        /// 获取CLR 数据类型 字符串-GDSJG
+        /// </summary>
+        /// <param name="dbType"></param>
+        /// <returns></returns>
+        public static string GetCLRTypeString_GDSJG(string dbType)
+        {
+            string type = string.Empty;
+            dbType = dbType.ToLower();
+            if (dbType.Contains("字符"))
+            {
+                type = "string";
+            }
+            else if (dbType.StartsWith("数值"))
+            {
+                type = "decimal";
+            }
+            //else if (dbType.StartsWith("int") || dbType.StartsWith("tinyint"))
+            //{
+            //    type = "int";
+            //}
+            else if (dbType.Contains("日期"))
+            {
+                type = "DateTime";
+            }
+
+            return type;
         }
     }
 }

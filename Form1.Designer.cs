@@ -32,6 +32,7 @@ namespace CodeFileTools
             this.TxtDirPath = new System.Windows.Forms.TextBox();
             this.LbDirPath = new System.Windows.Forms.Label();
             this.BtnStartCreate = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // TxtDirPath
@@ -53,19 +54,30 @@ namespace CodeFileTools
             // 
             // BtnStartCreate
             // 
-            this.BtnStartCreate.Location = new System.Drawing.Point(309, 205);
+            this.BtnStartCreate.Location = new System.Drawing.Point(200, 204);
             this.BtnStartCreate.Name = "BtnStartCreate";
-            this.BtnStartCreate.Size = new System.Drawing.Size(75, 23);
+            this.BtnStartCreate.Size = new System.Drawing.Size(140, 23);
             this.BtnStartCreate.TabIndex = 20;
-            this.BtnStartCreate.Text = "开始生成";
+            this.BtnStartCreate.Text = "开始生成(小程序)";
             this.BtnStartCreate.UseVisualStyleBackColor = true;
             this.BtnStartCreate.Click += new System.EventHandler(this.BtnStartCreate_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(367, 204);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(140, 23);
+            this.button1.TabIndex = 21;
+            this.button1.Text = "开始生成(GDSJG)";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(748, 515);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.BtnStartCreate);
             this.Controls.Add(this.LbDirPath);
             this.Controls.Add(this.TxtDirPath);
@@ -83,6 +95,7 @@ namespace CodeFileTools
         #endregion
 
         private System.Windows.Forms.Button BtnStartCreate;
+        private System.Windows.Forms.Button button1;
     }
 }
 
