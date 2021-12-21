@@ -17,6 +17,7 @@ namespace CodeFileTools
         public static string ContextName;
         public static List<CreateOptions> Options;
         public static string IgnoreFields;
+        public static List<string> IgnoreFieldLIst;
         public static Dictionary<FileTypeEnum, IFileProcess> dicType = new Dictionary<FileTypeEnum, IFileProcess>();
 
         static Utils()
@@ -54,6 +55,7 @@ namespace CodeFileTools
             ContextName = Config["ContextName"];
             Options = Config.GetSection("ConfigOptions").Get<List<CreateOptions>>();
             IgnoreFields = Config["IgnoreFields"];
+            IgnoreFieldLIst = IgnoreFields.Split(",").ToList();
         }
 
         /// <summary>
@@ -83,17 +85,24 @@ namespace CodeFileTools
 
                     Console.WriteLine($"开始检查sheet表 '{sheetName}': ");
                     //数据库表名
-                    var neededItems = new List<string>();
-                    var sheetSpitArray = sheetName.Split("-").ToList();
-                    neededItems.Add(sheetSpitArray[0]);
 
-                    var tbSpitArray = sheetSpitArray[0].Split("_").ToList();
+                    /*
+                        var tbName = prefix[0];
+                        var csName = prefix[1];
+                        var csSummaryName = prefix[2];
+                     */
+
+                    var neededItems = new List<string>(); 
+                    var sheetSpitArray = sheetName.Split("-").ToList();  //Excel Sheet命名规范 监管基础字典数据表-T_Supvise_BaseDicdata
+                    neededItems.Add(sheetSpitArray[1]); //tbname
+
+                    var tbSpitArray = sheetSpitArray[1].Split("_").ToList();
 
                     var sbCsName = new StringBuilder();
                     var flag = true;
                     foreach (var item in tbSpitArray)
                     {
-                        if (flag)
+                        if (flag) //第一个字母t 省略
                         {
                             flag = false;
                             continue;
@@ -101,9 +110,9 @@ namespace CodeFileTools
 
                         sbCsName.Append(item.FirstLeterUpper());
                     }
+                    neededItems.Add(sbCsName.ToString()); //csname
+                    neededItems.Add(sheetSpitArray[0]); //Summary
 
-                    neededItems.Add(sbCsName.ToString());
-                    neededItems.Add(sheetSpitArray[1]);
                     var queryRet = xmlSheetReader.Query(true, sheetName, "A1", null);
 
                     //得到表字段属性，以及索引属性--
@@ -169,7 +178,8 @@ namespace CodeFileTools
                             }
 
                             //公共字段不判断--
-                            if (IgnoreFields.Contains(itemValue.ToString().ToUpper()))
+                            //if (IgnoreFields.Contains(itemValue.ToString().ToUpper()))
+                            if (IgnoreFieldLIst.Contains(itemValue.ToString().ToUpper()))
                             {
                                 addFlag = false;
                                 break;

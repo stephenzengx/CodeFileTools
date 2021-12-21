@@ -10,6 +10,9 @@ namespace CodeFileTools
         public Form1()
         {
             InitializeComponent();
+
+            //RedisValue a = "11";
+            //TbDesc.TbDescSay(a);
         }
 
         public class DateTimeJsonConverter : JsonConverter<DateTime>

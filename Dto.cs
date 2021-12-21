@@ -14,7 +14,7 @@ namespace CodeFileTools
 
         public string Remark { get; set; }
 
-        public void TbDescSay()
+        public static void TbDescSay(string a="")
         {
             Console.WriteLine("This is TbDescSay");
         }
